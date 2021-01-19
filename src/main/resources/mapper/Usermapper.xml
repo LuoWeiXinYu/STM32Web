@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.mynoise.noiseshow.mapper.Usermapper">
+
+    <resultMap id="BaseResultMap" type="net.mynoise.noiseshow.entity.User" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+        <result column="sexy" property="sexy" jdbcType="VARCHAR" />
+        <result column="birthday" property="birthday" jdbcType="DATE" />
+        <result column="age" property="age" jdbcType="INTEGER" />
+        <result column="isuse" property="remark" jdbcType="BOOLEAN" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id,name,pwd,sexy,birthday,YEAR(now())-YEAR(BIRTHDAY) AS age,isuse</sql>
+
+    <select id="userlogin" parameterType="net.mynoise.noiseshow.entity.User" resultType="net.mynoise.noiseshow.entity.User">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_user WHERE name = #{name} AND pwd = #{pwd} and isuse!=0
+    </select>
+
+    <insert id="adduser" parameterType="net.mynoise.noiseshow.entity.User">
+        INSERT INTO tb_user (name,pwd,sexy,birthday) VALUES (#{arg0},#{arg1},#{arg2},#{arg3})
+    </insert>
+
+</mapper>

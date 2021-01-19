@@ -1,0 +1,179 @@
+<!--
+ * @Description: 
+ * @Version: 2.0
+ * @Autor: 余新伟
+ * @Date: 2020-12-26 16:28:43
+ * @LastEditors: Seven
+ * @LastEditTime: 2020-12-26 16:47:00
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>余新伟列表展示</title>
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <script type="text/javascript" src="js/vue.js"></script>
+    <style>
+        #table>table {
+            border-collapse: collapse;
+            text-align: center;
+            margin: 20px auto;
+        }
+        #table>table th,#table>table td {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 30px;
+        }
+        #table>table th {
+            background-color: #CCE8EB;
+            width: 200px;
+        }
+        #table>table tr:nth-child(odd)
+        {
+            background-color: #fff;
+        }
+        #table>table tr:nth-child(even)
+        {
+            background-color: #F5FAFA;
+        }
+        body {
+            background:url("/img/back.png")  no-repeat center center;
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-attachment:fixed;
+        }
+        .btn {
+            border-width: 0px; /* 边框宽度 */
+            border-radius: 3px; /* 边框半径 */
+            background: #1E90FF; /* 背景颜色 */
+            cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+            outline: none; /* 不显示轮廓线 */
+            font-family: Microsoft YaHei; /* 设置字体 */
+            color: white; /* 字体颜色 */
+            font-size: 17px; /* 字体大小 */
+        }
+        .btn:hover {
+            background: #5599FF;
+        }
+    </style>
+</head>
+<body>
+<h2 style="text-align: center;margin-top: 10px;color: black">姓名：余新伟 学号：201841882320</h2>
+<div style="text-align: center">
+    <button id="ledSet" class="btn" onclick="LEDSet()">打开LED灯</button>
+    <button id="beepSet" class="btn" onclick="BEEPSet()">打开BEEP</button>
+    <a href="/chart" rel="external nofollow" >
+        <button class="btn btn-primary ">点击查看动态柱状图</button>
+    </a>
+</div>
+<table align="center" border="0">
+    <tr>
+        <td>
+            <form action="/deldatabyid" method="post">
+                id：<input type="Integer" name="id" />
+                <input type="submit" value="按id删除" />
+            </form>
+        </td>
+    </tr>
+</table>
+<div align="center">
+    <form action="/update" method="post">
+        id:<input type="text" name="id" />
+        温度:<input type="text" name="temp" /></br>
+        湿度:<input type="text" name="hum" />
+        距离:<input type="text" name="dist" /></br>
+        是否有人:<input type="text" name="people" />
+        ip:<input type="text" value="196.168.137.1" name="ip"/>
+        <input type="submit" value="按id更改">
+    </form>
+</div>
+<div id="table">
+    <h2 style="text-align: center;margin-top: 20px;color: blue">
+        每秒刷新数据,显示最新的50个数据
+    </h2>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>温度</th>
+            <th>湿度</th>
+            <th>距离</th>
+            <th>是否有人</th>
+            <th>ip</th>
+            <th>采集时间</th>
+            <th>是否有效</th>
+
+        </tr>
+        <tr v-for="item in data" :key="item.id">
+            <td>{{item.id}}</td>
+            <td>{{item.temp}}</td>
+            <td>{{item.hum}}</td>
+            <td>{{item.dist}}</td>
+            <td>{{item.people==0?'否':'是'}}</td>
+            <td>{{item.ip}}</td>
+            <td>{{item.time}}</td>
+            <td>{{item.isused==0?'否':'是'}}</td>
+        </tr>
+    </table>
+</div>
+<script>
+    var led = false
+    var beep = false
+    function BEEPSet() {
+        beep=!beep
+        if(beep == false) {
+            document.getElementById("beepSet").innerHTML = '打开beep'
+            send("close_beep")
+        } else {
+            document.getElementById("beepSet").innerHTML = '关闭BEEP'
+            send("open_beep")
+        }
+    }
+    function LEDSet() {
+        led = !led
+        if(led==false) {
+            document.getElementById("ledSet").innerHTML = '打开LED'
+            send("close_led")
+        } else {
+            document.getElementById("ledSet").innerHTML = '关闭LED'
+            send("open_led")
+        }
+    }
+    function send(message) {
+        $.ajax({
+            url: `/sendData?message=${message}`,
+            type: 'get',
+            success: function (response) {
+                if(response=="success") {
+                    return 1
+                } else {
+                    return -1
+                }
+            }
+        })
+    }
+    var table = new Vue({
+        el : "#table",
+        data: {
+            data: [],
+        },
+    })
+    //数据刷新
+    setInterval(function() {
+        $.ajax({
+            url: '/baseData',
+            type: 'get',
+            dataType: 'json',
+            success: function (response) {
+                let last_data = []
+                let cnt = 0
+                for(let i = response.length-1 ; i >=0&&cnt<30; --i) {
+                    last_data.push(response[i])
+                    cnt++
+                }
+                table.$data.data = last_data
+            }
+        })
+    },1000)
+</script>
+</body>
+</html>

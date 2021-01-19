@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户操作成功</title>
+    <style>
+        #table>table {
+            border-collapse: collapse;
+            text-align: center;
+            margin: 20px auto;
+        }
+        #table>table th,#table>table td {
+            border: 1px solid #cad9ea;
+            color: #666;
+            height: 30px;
+        }
+        #table>table th {
+            background-color: #CCE8EB;
+            width: 200px;
+        }
+        #table>table tr:nth-child(odd)
+        {
+            background-color: #fff;
+        }
+        #table>table tr:nth-child(even)
+        {
+            background-color: #F5FAFA;
+        }
+        body {
+            background:url("/img/back.png")  no-repeat center center;
+            background-repeat: no-repeat;
+            background-size: 100%;
+            background-attachment:fixed;
+        }
+        .btn {
+            border-width: 0px; /* 边框宽度 */
+            border-radius: 3px; /* 边框半径 */
+            background: #1E90FF; /* 背景颜色 */
+            cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+            outline: none; /* 不显示轮廓线 */
+            font-family: Microsoft YaHei; /* 设置字体 */
+            color: white; /* 字体颜色 */
+            font-size: 17px; /* 字体大小 */
+        }
+        .btn:hover {
+            background: #5599FF;
+        }
+    </style>
+</head>
+<body>
+   <p align="center">用户操作成功！</p>
+</body>
+</html>
